@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* ★ 全体のデザイン */
+    body {
+      background: #f4f7f9;
+      font-family: "Helvetica", "Arial", sans-serif;
+      color: #333;
+      margin: 0;
+      padding: 10px;  /* ← 20px → 10px に変更（スマホで縮まずに表示） */
+    }
+
+    /* 中央寄せの外枠コンテナ（max-widthをここに） */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+
+    /* ★ セクションのカード風デザイン */
+    .section {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      font-size: 45px;
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+
+    /* ★ チェックボックスを大きく */
+    input[type="checkbox"] {
+      transform: scale(2.4);
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .amount.hidden {
+      display: none;
+    }
+
+    .amount {
+      margin-left: 20px;
+      margin-top: 4px;
+    }
+
+    label {
+      display: block;
+      padding: 4px 0;
+      cursor: pointer;
+      font-size: 30px;
+    }
+    .section h3 {
+      font-size: 45px;
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+    input[type="text"] {
+    width: 100%;           /* 横幅いっぱいに */
+    padding: 10px;         /* 内側の余白を広げる＝大きく見える */
+    font-size: 30px;       /* 文字サイズも拡大 */
+    border-radius: 6px;    /* カードデザインに馴染ませる */
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* padding込みで100%に収まる */
+    }
+    /* ★ テキストエリアを見やすく */
+    textarea {
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 30px;
+      border: 1px solid #ccc;
+    }
+
+    .section h4 {
+      font-size: 35px;
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+
+    /* ★ ボタンのデザイン */
+    button {
+      background: #3498db;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+    /* ★ スマホ最適化（ここが重要！） */
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+
+      .section {
+        padding: 10px 12px; /* ← 内側余白を縮小 */
+      }
+
+      h1 {
+        font-size: 45px;
+      }
+
+      label {
+        font-size: 30px;
+      }
+
+      input[type="checkbox"] {
+        transform: scale(2.4);  /* ← スマホではさらに押しやすく */
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <h1>キッチンジーニー~家にある食材だけでレシピを提案~</h1>
+
+    <div class="section">
+      <h2>1. 利用可能な食材を選んでください</h2>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="卵"> 卵</label><br>
+        <label class="priority-label">
+          <input type="checkbox" name="priority_卵">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_卵_area">
+        量を選ぶ(デフォルト：2~3個×人数分程度) ▼
+      </button>
+      <div id="amt_卵_area" class="amount hidden">
+      <label><input type="radio" name="amt_卵" value="少し(1個×人数分程度)"> 少し(1個×人数分程度)</label>
+      <label><input type="radio" name="amt_卵" value="普通(2~3個×人数分程度)" checked> 普通(2~3個×人数分程度)</label>
+      <label><input type="radio" name="amt_卵" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="豆腐"> 豆腐</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_豆腐">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_豆腐_area">
+        量を選ぶ(デフォルト：1~2パック×人数分程度) ▼
+      </button>
+      <div id="amt_豆腐_area" class="amount hidden">
+      <label><input type="radio" name="amt_豆腐" value="少し(1パック×人数分未満)"> 少し(1パック×人数分未満)</label>
+      <label><input type="radio" name="amt_豆腐" value="普通(1~2パック×人数分程度)" checked> 普通(1~2パック×人数分程度)</label>
+      <label><input type="radio" name="amt_豆腐" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="納豆"> 納豆</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_納豆">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_納豆_area">
+        量を選ぶ(デフォルト：2~3パック×人数分程度) ▼
+      </button>
+      <div id="amt_納豆_area" class="amount hidden">
+      <label><input type="radio" name="amt_納豆" value="少し(1パック×人数分以下)"> 少し(1パック×人数分以下)</label>
+      <label><input type="radio" name="amt_納豆" value="普通(2~3パック×人数分程度)" checked> 普通(2~3パック×人数分程度)</label>
+      <label><input type="radio" name="amt_納豆" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="鶏もも肉"> 鶏もも肉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_鶏もも肉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_鶏もも肉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_鶏もも肉_area" class="amount hidden">
+      <label><input type="radio" name="amt_鶏もも肉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_鶏もも肉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_鶏もも肉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="鶏むね肉"> 鶏むね肉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_鶏むね肉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_鶏むね肉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_鶏むね肉_area" class="amount hidden">
+      <label><input type="radio" name="amt_鶏むね肉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_鶏むね肉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_鶏むね肉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="豚こま肉"> 豚こま肉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_豚こま肉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_豚こま肉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_豚こま肉_area" class="amount hidden">
+      <label><input type="radio" name="amt_豚こま肉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_豚こま肉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_豚こま肉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="挽き肉"> 挽き肉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_挽き肉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_挽き肉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_挽き肉_area" class="amount hidden">
+      <label><input type="radio" name="amt_挽き肉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_挽き肉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_挽き肉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ハム"> ハム</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ハム">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ハム_area">
+        量を選ぶ(デフォルト：50g×人数分程度) ▼
+      </button>
+      <div id="amt_ハム_area" class="amount hidden">
+      <label><input type="radio" name="amt_ハム" value="少し(25g×人数分程度)"> 少し(25g×人数分程度)</label>
+      <label><input type="radio" name="amt_ハム" value="普通(50g×人数分程度)" checked> 普通(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_ハム" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ベーコン"> ベーコン</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ベーコン">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ベーコン_area">
+        量を選ぶ(デフォルト：50g×人数分程度) ▼
+      </button>
+      <div id="amt_ベーコン_area" class="amount hidden">
+      <label><input type="radio" name="amt_ベーコン" value="少し(25g×人数分程度)"> 少し(25g×人数分程度)</label>
+      <label><input type="radio" name="amt_ベーコン" value="普通(50g×人数分程度)" checked> 普通(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_ベーコン" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ソーセージ"> ソーセージ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ソーセージ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ソーセージ_area">
+        量を選ぶ(デフォルト：50g×人数分程度) ▼
+      </button>
+      <div id="amt_ソーセージ_area" class="amount hidden">
+      <label><input type="radio" name="amt_ソーセージ" value="少し(25g×人数分程度)"> 少し(25g×人数分程度)</label>
+      <label><input type="radio" name="amt_ソーセージ" value="普通(50g×人数分程度)" checked> 普通(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_ソーセージ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="玉ねぎ"> 玉ねぎ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_玉ねぎ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_玉ねぎ_area">
+        量を選ぶ(デフォルト：1/2個×人数分程度) ▼
+      </button>
+      <div id="amt_玉ねぎ_area" class="amount hidden">
+      <label><input type="radio" name="amt_玉ねぎ" value="少し(1/4個×人数分程度)"> 少し(1/4個×人数分程度)</label>
+      <label><input type="radio" name="amt_玉ねぎ" value="普通(1/2個×人数分程度)" checked> 普通(1/2個×人数分程度)</label>
+      <label><input type="radio" name="amt_玉ねぎ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="にんじん"> にんじん</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_にんじん">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_にんじん_area">
+        量を選ぶ(デフォルト：0.4本×人数分程度) ▼
+      </button>
+      <div id="amt_にんじん_area" class="amount hidden">
+      <label><input type="radio" name="amt_にんじん" value="少し(0.2本×人数分程度)"> 少し(0.2本×人数分程度)</label>
+      <label><input type="radio" name="amt_にんじん" value="普通(0.4本×人数分程度)" checked> 普通(0.4本×人数分程度)</label>
+      <label><input type="radio" name="amt_にんじん" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="じゃがいも"> じゃがいも</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_じゃがいも">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_じゃがいも_area">
+        量を選ぶ(デフォルト：2/3個×人数分程度) ▼
+      </button>
+      <div id="amt_じゃがいも_area" class="amount hidden">
+      <label><input type="radio" name="amt_じゃがいも" value="少し(1/3個×人数分程度)"> 少し(1/3個×人数分程度)</label>
+      <label><input type="radio" name="amt_じゃがいも" value="普通(2/3個×人数分程度)" checked> 普通(2/3個×人数分程度)</label>
+      <label><input type="radio" name="amt_じゃがいも" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="キャベツ"> キャベツ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_キャベツ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_キャベツ_area">
+        量を選ぶ(デフォルト：1枚×人数分程度) ▼
+      </button>
+      <div id="amt_キャベツ_area" class="amount hidden">
+      <label><input type="radio" name="amt_キャベツ" value="少し(1/2枚×人数分程度)"> 少し(1/2枚×人数分程度)</label>
+      <label><input type="radio" name="amt_キャベツ" value="普通(1枚×人数分程度)" checked> 普通(1枚×人数分程度)</label>
+      <label><input type="radio" name="amt_キャベツ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="もやし"> もやし</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_もやし">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_もやし_area">
+        量を選ぶ(デフォルト：1/2袋×人数分程度) ▼
+      </button>
+      <div id="amt_もやし_area" class="amount hidden">
+      <label><input type="radio" name="amt_もやし" value="少し(1/4袋×人数分程度)"> 少し(1/4袋×人数分程度)</label>
+      <label><input type="radio" name="amt_もやし" value="普通(1/2袋×人数分程度)" checked> 普通(1/2袋×人数分程度)</label>
+      <label><input type="radio" name="amt_もやし" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="白菜"> 白菜</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_白菜">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_白菜_area">
+        量を選ぶ(デフォルト：2枚×人数分程度) ▼
+      </button>
+      <div id="amt_白菜_area" class="amount hidden">
+      <label><input type="radio" name="amt_白菜" value="少し(1枚×人数分程度)"> 少し(1枚×人数分程度)</label>
+      <label><input type="radio" name="amt_白菜" value="普通(2枚×人数分程度)" checked> 普通(2枚×人数分程度)</label>
+      <label><input type="radio" name="amt_白菜" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="長ねぎ"> 長ねぎ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_長ねぎ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_長ねぎ_area">
+        量を選ぶ(デフォルト：1/2本×人数分程度) ▼
+      </button>
+      <div id="amt_長ねぎ_area" class="amount hidden">
+      <label><input type="radio" name="amt_長ねぎ" value="少し(1/4本×人数分程度)"> 少し(1/4本×人数分程度)</label>
+      <label><input type="radio" name="amt_長ねぎ" value="普通(1/2本×人数分程度)" checked> 普通(1/2本×人数分程度)</label>
+      <label><input type="radio" name="amt_長ねぎ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ピーマン"> ピーマン</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ピーマン">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ピーマン_area">
+        量を選ぶ(デフォルト：1個×人数分程度) ▼
+      </button>
+      <div id="amt_ピーマン_area" class="amount hidden">
+      <label><input type="radio" name="amt_ピーマン" value="少し(1/2個×人数分程度)"> 少し(1/2個×人数分程度)</label>
+      <label><input type="radio" name="amt_ピーマン" value="普通(1個×人数分程度)" checked> 普通(1個×人数分程度)</label>
+      <label><input type="radio" name="amt_ピーマン" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ナス"> ナス</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ナス">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ナス_area">
+        量を選ぶ(デフォルト：1本×人数分程度) ▼
+      </button>
+      <div id="amt_ナス_area" class="amount hidden">
+      <label><input type="radio" name="amt_ナス" value="少し(1/2本×人数分程度)"> 少し(1/2本×人数分程度)</label>
+      <label><input type="radio" name="amt_ナス" value="普通(1本×人数分程度)" checked> 普通(1本×人数分程度)</label>
+      <label><input type="radio" name="amt_ナス" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="トマト"> トマト</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_トマト">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_トマト_area">
+        量を選ぶ(デフォルト：1個×人数分程度) ▼
+      </button>
+      <div id="amt_トマト_area" class="amount hidden">
+      <label><input type="radio" name="amt_トマト" value="少し(1/2個×人数分程度)"> 少し(1/2個×人数分程度)</label>
+      <label><input type="radio" name="amt_トマト" value="普通(1個×人数分程度)" checked> 普通(1個×人数分程度)</label>
+      <label><input type="radio" name="amt_トマト" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="きゅうり"> きゅうり</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_きゅうり">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_きゅうり_area">
+        量を選ぶ(デフォルト：1本×人数分程度) ▼
+      </button>
+      <div id="amt_きゅうり_area" class="amount hidden">
+      <label><input type="radio" name="amt_きゅうり" value="少し(1/2本×人数分程度)"> 少し(1/2本×人数分程度)</label>
+      <label><input type="radio" name="amt_きゅうり" value="普通(1本×人数分程度)" checked> 普通(1本×人数分程度)</label>
+      <label><input type="radio" name="amt_きゅうり" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="しめじ"> しめじ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_しめじ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_しめじ_area">
+        量を選ぶ(デフォルト：1/2パック×人数分程度) ▼
+      </button>
+      <div id="amt_しめじ_area" class="amount hidden">
+      <label><input type="radio" name="amt_しめじ" value="少し(1/4パック×人数分程度)"> 少し(1/4パック×人数分程度)</label>
+      <label><input type="radio" name="amt_しめじ" value="普通(1/2パック×人数分程度)" checked> 普通(1/2パック×人数分程度)</label>
+      <label><input type="radio" name="amt_しめじ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="エリンギ"> エリンギ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_エリンギ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_エリンギ_area">
+        量を選ぶ(デフォルト：1本×人数分程度) ▼
+      </button>
+      <div id="amt_エリンギ_area" class="amount hidden">
+      <label><input type="radio" name="amt_エリンギ" value="少し(1/2本×人数分程度)"> 少し(1/2本×人数分程度)</label>
+      <label><input type="radio" name="amt_エリンギ" value="普通(1本×人数分程度)" checked> 普通(1本×人数分程度)</label>
+      <label><input type="radio" name="amt_エリンギ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="冷凍ほうれん草"> 冷凍ほうれん草</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_冷凍ほうれん草">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_冷凍ほうれん草_area">
+        量を選ぶ(デフォルト：90g×人数分程度) ▼
+      </button>
+      <div id="amt_冷凍ほうれん草_area" class="amount hidden">
+      <label><input type="radio" name="amt_冷凍ほうれん草" value="少し(40g×人数分程度)"> 少し(40g×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍ほうれん草" value="普通(90g×人数分程度)" checked> 普通(90g×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍ほうれん草" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="冷凍ブロッコリー"> 冷凍ブロッコリー</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_冷凍ブロッコリー">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_冷凍ブロッコリー_area">
+        量を選ぶ(デフォルト：4~6個×人数分程度) ▼
+      </button>
+      <div id="amt_冷凍ブロッコリー_area" class="amount hidden">
+      <label><input type="radio" name="amt_冷凍ブロッコリー" value="少し(2~3個×人数分程度)"> 少し(2~3個×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍ブロッコリー" value="普通(4~6個×人数分程度)" checked> 普通(4~6個×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍ブロッコリー" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="冷凍コーン"> 冷凍コーン</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_冷凍コーン">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_冷凍コーン_area">
+        量を選ぶ(デフォルト：90g×人数分程度) ▼
+      </button>
+      <div id="amt_冷凍コーン_area" class="amount hidden">
+      <label><input type="radio" name="amt_冷凍コーン" value="少し(40g×人数分程度)"> 少し(40g×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍コーン" value="普通(90g×人数分程度)" checked> 普通(90g×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍コーン" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="冷凍うどん"> 冷凍うどん</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_冷凍うどん">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_冷凍うどん_area">
+        量を選ぶ(デフォルト：1袋×人数分程度) ▼
+      </button>
+      <div id="amt_冷凍うどん_area" class="amount hidden">
+      <label><input type="radio" name="amt_冷凍うどん" value="少し(1袋×人数分未満)"> 少し(1袋×人数分未満)</label>
+      <label><input type="radio" name="amt_冷凍うどん" value="普通(1袋×人数分程度)" checked> 普通(1袋×人数分程度)</label>
+      <label><input type="radio" name="amt_冷凍うどん" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="米"> 米</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_米">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_米_area">
+        量を選ぶ(デフォルト：茶碗1杯×人数分程度) ▼
+      </button>
+      <div id="amt_米_area" class="amount hidden">
+      <label><input type="radio" name="amt_米" value="少し(茶碗1杯×人数分未満)"> 少し(茶碗1杯×人数分未満)</label>
+      <label><input type="radio" name="amt_米" value="普通(茶碗1杯×人数分程度)" checked> 普通(茶碗1杯×人数分程度)</label>
+      <label><input type="radio" name="amt_米" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="パスタ"> パスタ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_パスタ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_パスタ_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_パスタ_area" class="amount hidden">
+      <label><input type="radio" name="amt_パスタ" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_パスタ" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_パスタ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="食パン"> 食パン</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_食パン">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_食パン_area">
+        量を選ぶ(デフォルト：2~3枚×人数分程度) ▼
+      </button>
+      <div id="amt_食パン_area" class="amount hidden">
+      <label><input type="radio" name="amt_食パン" value="少し(1枚×人数分程度)"> 少し(1枚×人数分程度)</label>
+      <label><input type="radio" name="amt_食パン" value="普通(2~3枚×人数分程度)" checked> 普通(2~3枚×人数分程度)</label>
+      <label><input type="radio" name="amt_食パン" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ツナ缶"> ツナ缶</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ツナ缶">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ツナ缶_area">
+        量を選ぶ(デフォルト：1缶×人数分程度) ▼
+      </button>
+      <div id="amt_ツナ缶_area" class="amount hidden">
+      <label><input type="radio" name="amt_ツナ缶" value="少し(1缶×人数分未満)"> 少し(1缶×人数分未満)</label>
+      <label><input type="radio" name="amt_ツナ缶" value="普通(1缶×人数分程度)" checked> 普通(1缶×人数分程度)</label>
+      <label><input type="radio" name="amt_ツナ缶" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="コーン缶"> コーン缶</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_コーン缶">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_コーン缶_area">
+        量を選ぶ(デフォルト：1缶×人数分程度) ▼
+      </button>
+      <div id="amt_コーン缶_area" class="amount hidden">
+      <label><input type="radio" name="amt_コーン缶" value="少し(1缶×人数分未満)"> 少し(1缶×人数分未満)</label>
+      <label><input type="radio" name="amt_コーン缶" value="普通(1缶×人数分程度)" checked> 普通(1缶×人数分程度)</label>
+      <label><input type="radio" name="amt_コーン缶" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="カットトマト缶"> カットトマト缶</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_カットトマト缶">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_カットトマト缶_area">
+        量を選ぶ(デフォルト：1/2缶×人数分程度) ▼
+      </button>
+      <div id="amt_カットトマト缶_area" class="amount hidden">
+      <label><input type="radio" name="amt_カットトマト缶" value="少し(1/4缶×人数分程度)"> 少し(1/4缶×人数分程度)</label>
+      <label><input type="radio" name="amt_カットトマト缶" value="普通(1/2缶×人数分程度)" checked> 普通(1/2缶×人数分程度)</label>
+      <label><input type="radio" name="amt_カットトマト缶" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="鯖缶"> 鯖缶</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_鯖缶">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_鯖缶_area">
+        量を選ぶ(デフォルト：1缶×人数分程度) ▼
+      </button>
+      <div id="amt_鯖缶_area" class="amount hidden">
+      <label><input type="radio" name="amt_鯖缶" value="少し(1缶×人数分未満)"> 少し(1缶×人数分未満)</label>
+      <label><input type="radio" name="amt_鯖缶" value="普通(1缶×人数分程度)" checked> 普通(1缶×人数分程度)</label>
+      <label><input type="radio" name="amt_鯖缶" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="薄力粉"> 薄力粉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_薄力粉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_薄力粉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_薄力粉_area" class="amount hidden">
+      <label><input type="radio" name="amt_薄力粉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_薄力粉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_薄力粉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="強力粉"> 強力粉</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_強力粉">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_強力粉_area">
+        量を選ぶ(デフォルト：100g×人数分程度) ▼
+      </button>
+      <div id="amt_強力粉_area" class="amount hidden">
+      <label><input type="radio" name="amt_強力粉" value="少し(50g×人数分程度)"> 少し(50g×人数分程度)</label>
+      <label><input type="radio" name="amt_強力粉" value="普通(100g×人数分程度)" checked> 普通(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_強力粉" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="牛乳"> 牛乳</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_牛乳">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_牛乳_area">
+        量を選ぶ(デフォルト：150g×人数分程度) ▼
+      </button>
+      <div id="amt_牛乳_area" class="amount hidden">
+      <label><input type="radio" name="amt_牛乳" value="少し(100g×人数分程度)"> 少し(100g×人数分程度)</label>
+      <label><input type="radio" name="amt_牛乳" value="普通(150g×人数分程度)" checked> 普通(150g×人数分程度)</label>
+      <label><input type="radio" name="amt_牛乳" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="ヨーグルト"> ヨーグルト</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_ヨーグルト">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_ヨーグルト_area">
+        量を選ぶ(デフォルト：80g×人数分程度) ▼
+      </button>
+      <div id="amt_ヨーグルト_area" class="amount hidden">
+      <label><input type="radio" name="amt_ヨーグルト" value="少し(40g×人数分程度)"> 少し(40g×人数分程度)</label>
+      <label><input type="radio" name="amt_ヨーグルト" value="普通(80g×人数分程度)" checked> 普通(80g×人数分程度)</label>
+      <label><input type="radio" name="amt_ヨーグルト" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="キムチ"> キムチ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_キムチ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_キムチ_area">
+        量を選ぶ(デフォルト：80g×人数分程度) ▼
+      </button>
+      <div id="amt_キムチ_area" class="amount hidden">
+      <label><input type="radio" name="amt_キムチ" value="少し(40g×人数分程度)"> 少し(40g×人数分程度)</label>
+      <label><input type="radio" name="amt_キムチ" value="普通(80g×人数分程度)" checked> 普通(80g×人数分程度)</label>
+      <label><input type="radio" name="amt_キムチ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="海苔"> 海苔</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_海苔">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_海苔_area">
+        量を選ぶ(デフォルト：それ以上) ▼
+      </button>
+      <div id="amt_海苔_area" class="amount hidden">
+      <label><input type="radio" name="amt_海苔" value="少し(1/8枚×人数分程度)"> 少し(1/8枚×人数分程度)</label>
+      <label><input type="radio" name="amt_海苔" value="普通(1/4枚×人数分程度)"> 普通(1/4枚×人数分程度)</label>
+      <label><input type="radio" name="amt_海苔" value="たくさん(無制限)" checked> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="バナナ"> バナナ</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_バナナ">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_バナナ_area">
+        量を選ぶ(デフォルト：1本×人数分程度) ▼
+      </button>
+      <div id="amt_バナナ_area" class="amount hidden">
+      <label><input type="radio" name="amt_バナナ" value="少し(1/2本×人数分程度)"> 少し(1/2本×人数分程度)</label>
+      <label><input type="radio" name="amt_バナナ" value="普通(1本×人数分程度)" checked> 普通(1本×人数分程度)</label>
+      <label><input type="radio" name="amt_バナナ" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="りんご"> りんご</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_りんご">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_りんご_area">
+        量を選ぶ(デフォルト：1個×人数分程度) ▼
+      </button>
+      <div id="amt_りんご_area" class="amount hidden">
+      <label><input type="radio" name="amt_りんご" value="少し(1/2個×人数分程度)"> 少し(1/2個×人数分程度)</label>
+      <label><input type="radio" name="amt_りんご" value="普通(1個×人数分程度)" checked> 普通(1個×人数分程度)</label>
+      <label><input type="radio" name="amt_りんご" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+      <div class="ingredient-block">
+      <label><input type="checkbox" name="ingredients" value="みかん"> みかん</label><br>
+      <label class="priority-label">
+          <input type="checkbox" name="priority_みかん">
+          優先的に消費したい食材にチェックを入れてください
+        </label>
+      <button type="button" class="toggle-amount" data-target="amt_みかん_area">
+        量を選ぶ(デフォルト：1個×人数分程度) ▼
+      </button>
+      <div id="amt_みかん_area" class="amount hidden">
+      <label><input type="radio" name="amt_みかん" value="少し(1/2個×人数分程度)"> 少し(1/2個×人数分程度)</label>
+      <label><input type="radio" name="amt_みかん" value="普通(1個×人数分程度)" checked> 普通(1個×人数分程度)</label>
+      <label><input type="radio" name="amt_みかん" value="たくさん(無制限)"> たくさん(それ以上)</label>
+      </div><br>
+      </div>
+
+      <h3>その他の食材（自由入力）</h3>
+      <input type="text" id="extra" placeholder="例：鮭、しいたけ、梅干し">
+    </div>
+
+    <div class="section">
+      <h2>2. 利用できない調味料があれば選択してください</h2>
+      <label><input type="checkbox" name="missing" value="塩"> 塩</label><br>
+      <label><input type="checkbox" name="missing" value="砂糖"> 砂糖</label><br>
+      <label><input type="checkbox" name="missing" value="醤油"> 醤油</label><br>
+      <label><input type="checkbox" name="missing" value="めんつゆ"> めんつゆ</label><br>
+      <label><input type="checkbox" name="missing" value="みりん"> みりん</label><br>
+      <label><input type="checkbox" name="missing" value="料理酒"> 料理酒</label><br>
+      <label><input type="checkbox" name="missing" value="味噌"> 味噌</label><br>
+      <label><input type="checkbox" name="missing" value="ごま油"> ごま油</label><br>
+      <label><input type="checkbox" name="missing" value="サラダ油"> サラダ油</label><br>
+      <label><input type="checkbox" name="missing" value="バター"> バター</label><br>
+      <label><input type="checkbox" name="missing" value="しょうがチューブ"> しょうがチューブ</label><br>
+      <label><input type="checkbox" name="missing" value="にんにくチューブ"> にんにくチューブ</label><br>
+      <label><input type="checkbox" name="missing" value="コンソメ"> コンソメ</label><br>
+      <label><input type="checkbox" name="missing" value="鶏がらスープの素"> 鶏がらスープの素</label><br>
+      <label><input type="checkbox" name="missing" value="ケチャップ"> ケチャップ</label><br>
+      <label><input type="checkbox" name="missing" value="マヨネーズ"> マヨネーズ</label><br>
+    </div>
+
+    <div class="section">
+      <h2>2. 何人前を作りますか？</h2>
+      <label><input type="radio" name="servings" value="0.5"> 0.5人前(軽めの一人分)</label><br>
+      <label><input type="radio" name="servings" value="1"> 1人前(標準量)</label><br>
+      <label><input type="radio" name="servings" value="1.5"> 1.5人前(多めの一人分)</label><br>
+      <label><input type="radio" name="servings" value="2"> 2人前</label><br>
+      <label><input type="radio" name="servings" value="3"> 3人前</label><br>
+      <label><input type="radio" name="servings" value="4"> 4人前</label><br>
+      <label><input type="radio" name="servings" value="5"> 5人前</label><br>
+    </div>
+
+          <div class="section">
+          <h2>3. 食事に何を求めますか？</h2>
+          <label><input type="radio" name="mood" value="easy"> とにかく手軽に作りたい</label><br>
+          <label><input type="radio" name="mood" value="taste"> おいしいものが食べたい</label><br>
+          <label><input type="radio" name="mood" value="health"> 健康にも気をつかいたい</label><br>
+          </div>
+
+          <button onclick="generate()">入力完了！</button>
+
+          <h4>※注意：無理な条件でレシピを生成しようとすると、生成AIが想定外の挙動をする場合があります。</h4>
+
+          <h2>↓ 以下の文章をChatGPT等に送信してください</h2>
+          <textarea id="result" style="width:100%; height:200px;"></textarea>
+          <br>
+          <button onclick="copyText()">コピーする</button>
+
+          <button onclick="openChatGPT()">
+          ChatGPTを開く(コピー機能付き)
+          </button>
+
+          <footer style="text-align:center; margin-top:40px; padding:20px; font-size:14px;">
+            本サービスを利用した場合、<a href="terms.html">利用規約</a>に同意したものとみなします。
+            連絡先→開発者X：@gaimutukiichi1
+          </footer>
+
+          <script>
+          function generate() {
+          const ingredients = [...document.querySelectorAll("input[name=ingredients]:checked")].map(i => i.value);
+          const priority = [...document.querySelectorAll("input[name^=priority_]:checked")].map(i => i.name.replace("priority_", ""));
+          const extra = document.getElementById("extra").value;
+          const missing = [...document.querySelectorAll("input[name=missing]:checked")].map(i => i.value);
+          const servings = document.querySelector("input[name=servings]:checked")?.value;
+          const mood = document.querySelector("input[name=mood]:checked")?.value;
+
+          // ★ 量をまとめて取得する部分を追加
+          const amounts = {};
+          ingredients.forEach(name => {
+          const radio = document.querySelector(`input[name="amt_${name}"]:checked`);
+          amounts[name] = radio ? radio.value : "普通";
+          });
+
+          
+
+        google.script.run.withSuccessHandler(function(text){
+          document.getElementById("result").value = text;
+        }).generatePrompt({
+          ingredients: ingredients,
+          extra: extra,
+          missing: missing,
+          servings: servings,
+          mood: mood,
+          amounts: amounts,
+          priority: priority
+        });
+      }
+      document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("toggle-amount")) {
+    const targetId = e.target.dataset.target;
+    const area = document.getElementById(targetId);
+    area.classList.toggle("hidden"); // 表示/非表示を切り替え
+  }
+});
+      function copyText() {
+    const text = document.getElementById("result").value;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("コピーしました！");
+    });
+  }
+  function openChatGPT() {
+    const text = document.getElementById("result").value;
+    navigator.clipboard.writeText(text).then(() => {
+      window.open("https://chat.openai.com/", "_blank");
+    });
+}
+    </script>
+
+  </body>
+</html>
