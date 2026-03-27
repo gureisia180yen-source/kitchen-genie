@@ -1,8 +1,3 @@
-// @ts-ignore
-function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile('index');
-}
-
 function generatePrompt(form) {
   const ingredients = form.ingredients || [];
   const priority = form.priority || [];
